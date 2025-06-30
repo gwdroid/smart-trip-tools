@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 import httpx
 
 app = FastAPI(title="SmartTrip Tools", version="1.0")
@@ -35,3 +36,19 @@ async def pack_list(req: PackReq):
         base += ["trail shoes", "day-pack"]
     nice = ["hand warmers"] if (req.season or "").lower() == "winter" else []
     return {"necessary": base, "nice_to_have": nice}
+
+
+PRIVACY_HTML = """
+<!doctype html>
+<title>Privacy Policy – Smart Trip Planner GPT</title>
+<h1>Privacy Policy</h1>
+<p>This demo API stores no personal data. Incoming requests are
+processed in-memory and discarded after the response is returned.</p>
+<p>No cookies, no analytics, no third-party tracking.</p>
+<p>Contact: youremail@example.com</p>
+"""
+
+@app.get("/privacy", include_in_schema=False)
+async def privacy():
+    return HTMLResponse(PRIVACY_HTML)
+
